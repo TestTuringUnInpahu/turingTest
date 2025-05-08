@@ -1,0 +1,24 @@
+<body>
+  <div class="main-wrapper">
+    <div class="chat-container">
+      <div class="chat-window" #chatWindow>
+        <div *ngFor="let msg of messages" class="message" [ngClass]="msg.sender">
+          <div class="message-content">{{ msg.text }}</div>
+        </div>
+
+        <div *ngIf="loading" class="message bot">
+          <div class="message-content"><em>Escribiendo...</em></div>
+        </div>
+      </div>
+
+      <form (ngSubmit)="sendPrompt()" class="chat-form">
+        <input [(ngModel)]="prompt" name="message" class="chat-input" placeholder="Escribe tu mensaje..." required />
+        <button type="submit" class="send-button">Enviar</button>
+      </form>
+    </div>
+
+    <div class="avatar-window">
+      <img src="../../assets/imgs/prueba_avatar.jpeg" width="100%">
+    </div>
+  </div>
+</body>
