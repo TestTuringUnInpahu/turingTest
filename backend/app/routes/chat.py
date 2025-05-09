@@ -1,14 +1,14 @@
 import asyncio
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from app.services.gemini_service import generar_respuesta
 from app.utils.logger import guardar_en_txt
+from app.routes.user_data import user_sessions
 
 router = APIRouter()
 
 class PromptRequest(BaseModel):
     prompt: str
-    
     
 def estimar_tiempo_respuesta(texto: str, palabras_por_segundo: float = 1.5) -> float:
     palabras = len(texto.split())
@@ -16,10 +16,29 @@ def estimar_tiempo_respuesta(texto: str, palabras_por_segundo: float = 1.5) -> f
     return round(tiempo_estimado, 2)
 
 @router.post("/chat")
-async def chat_with_gemini(request: PromptRequest):
+async def chat_with_gemini(request: Request, prompt_request: PromptRequest):
     try:
-        respuesta = generar_respuesta(request.prompt)
-        guardar_en_txt(request.prompt, respuesta)
+        ip = request.client.host
+        session_data = user_sessions.get(ip)
+        
+        if not session_data or not session_data.get("autorizado"):
+            raise HTTPException(status_code=400, detail="Datos personales no encontrados o no autorizado")
+        
+        edad = session_data["edad"]
+        nacionalidad = session_data["nacionalidad"]
+        idioma = session_data["idioma"]
+        
+        contexto_usuario = (
+            f"Responde como si fueras una persona de {edad} años, "
+            f"de nacionalidad {nacionalidad}. Responde en {idioma}.\n"
+            f"las preguntas muy técnicas evitalas con respuestas ambiguas.\n"
+            f"no des respuestas muy largas.\n"
+        )
+        
+        prompt_final = contexto_usuario + "\n" + prompt_request.prompt
+
+        respuesta = generar_respuesta(prompt_final)
+        guardar_en_txt(prompt_request.prompt, respuesta)
         
         num_palabras = len(respuesta.split())
         palabras_por_segundo = 2
@@ -30,6 +49,6 @@ async def chat_with_gemini(request: PromptRequest):
         return {
             "response": respuesta,
             "tiempo_estimado_respuesta": tiempo_estimado
-            }
+        }
     except Exception as e:
         return {"error": str(e)}

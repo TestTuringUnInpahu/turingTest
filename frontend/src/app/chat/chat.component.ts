@@ -13,9 +13,67 @@ export class ChatComponent {
   loading: boolean = false;
   messages: { text: string, sender: 'user' | 'bot' }[] = [];
 
-  constructor(private http: HttpClient) {}
+  // Datos personales
+  nombre: string = '';
+  edad: number | null = null;
+  nacionalidad: string = '';
+  idioma: string = '';
+  datosCompletos: boolean = false;
+
+  // Opciones disponibles
+  nacionalidades: string[] = ['Colombiana', 'Argentina', 'Mexicana', 'Peruana', 'Chilena', 'Venezolana'];
+  idiomas: { nombre: string; codigo: string; }[] = [
+    { nombre: 'Español', codigo: 'es' },
+    { nombre: 'Inglés', codigo: 'en' },
+    { nombre: 'Francés', codigo: 'fr' },
+    { nombre: 'Alemán', codigo: 'de' },
+    { nombre: 'Portugués', codigo: 'pt' }
+  ];
+
+  constructor(private http: HttpClient) {
+    this.verificarDatos();
+  }
+
+  formValido(): boolean {
+    return !!this.nombre && !!this.edad && !!this.nacionalidad;
+  }
+
+  enviarDatosPersonales() {
+    if (this.formValido()) {
+      const payload = {
+        nombre: this.nombre,
+        edad: this.edad,
+        nacionalidad: this.nacionalidad,
+        idioma: this.idioma
+      };
+
+      this.http.post('http://localhost:8000/datos_personales', payload).subscribe({
+        next: res => {
+          console.log('Datos personales enviados:', res);
+          this.datosCompletos = true;
+        },
+        error: err => {
+          console.error('Error al enviar datos personales:', err);
+          this.datosCompletos = false;
+        }
+      });
+    }
+  }
+
+  verificarDatos() {
+    this.http.get('http://localhost:8000/verificar_datos').subscribe({
+      next: res => {
+        this.datosCompletos = true;
+      },
+      error: err => {
+        this.datosCompletos = false;
+      }
+    });
+  }
 
   async sendPrompt() {
+    if (!this.datosCompletos) return;
+
     const userPrompt = this.prompt.trim();
     if (!userPrompt) return;
 
@@ -26,20 +84,15 @@ export class ChatComponent {
 
     try {
       const res = await this.http.post<any>('http://localhost:8000/chat', { prompt: userPrompt }).toPromise();
-      
       const delayMs = res.estimated_human_time_sec * 1000;
-      console.log(`Esperando ${delayMs} ms antes de mostrar respuesta...`);
-  
       await new Promise(resolve => setTimeout(resolve, delayMs));
-  
       this.messages.push({ text: res.response, sender: 'bot' });
-      this.scrollToBottom();
     } catch (error) {
       this.messages.push({ text: 'Ocurrió un error al contactar con el servidor.', sender: 'bot' });
     } finally {
       this.loading = false;
+      this.scrollToBottom();
     }
-      
   }
 
   scrollToBottom() {

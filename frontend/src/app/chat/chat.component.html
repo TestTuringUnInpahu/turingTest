@@ -12,13 +12,55 @@
       </div>
 
       <form (ngSubmit)="sendPrompt()" class="chat-form">
-        <input [(ngModel)]="prompt" name="message" class="chat-input" placeholder="Escribe tu mensaje..." required />
-        <button type="submit" class="send-button">Enviar</button>
+        <input [(ngModel)]="prompt" name="message" class="chat-input" placeholder="Escribe tu mensaje..." required
+          [disabled]="!datosCompletos" />
+        <button type="submit" class="send-button" [disabled]="!datosCompletos">Enviar</button>
       </form>
     </div>
 
-    <div class="avatar-window">
-      <img src="../../assets/imgs/prueba_avatar.jpeg" width="100%">
+    <div class="profile-card">
+      <div class="avatar-window">
+        <img src="../../assets/imgs/prueba_avatar.jpeg" width="100%">
+      </div>
+
+      <form class="personal-data-form" (ngSubmit)="enviarDatosPersonales()">
+        <div class="data-form">
+          <h3 align="center">Información personal</h3>
+
+          <div class="input-row">
+            <div class="espacio-input">
+              <input [(ngModel)]="nombre" name="nombre" class="inp-data" placeholder="Escribe tu nombre"
+                [disabled]="datosCompletos" required />
+            </div>
+
+            <div class="espacio-input">
+              <input [(ngModel)]="edad" name="edad" type="number" class="inp-data" placeholder="Edad"
+                [disabled]="datosCompletos" required />
+            </div>
+          </div>
+
+          <div class="espacio-input">
+            <select [(ngModel)]="nacionalidad" name="nacionalidad" class="inp-data" [disabled]="datosCompletos"
+              required>
+              <option value="" disabled selected>Selecciona tu nacionalidad</option>
+              <option *ngFor="let pais of nacionalidades" [value]="pais">{{ pais }}</option>
+            </select>
+          </div>
+
+          <div class="espacio-input">
+            <select [(ngModel)]="idioma" name="idioma" class="inp-data" [disabled]="datosCompletos" required>
+              <option value="" disabled selected>Selecciona idioma del chat</option>
+              <option *ngFor="let lang of idiomas" [value]="lang.codigo">{{ lang.nombre }}</option>
+            </select>
+          </div>
+
+          <div class="espacio-input" align="center">
+            <button type="submit" class="send-button-personal-data" [disabled]="!formValido() || datosCompletos">
+              Conectar chat
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </body>
