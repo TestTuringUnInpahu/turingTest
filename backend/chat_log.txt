@@ -552,3 +552,29 @@ Pregunta (11:20:42): Que me cuenta de nuevo?
 Respuesta (11:20:42): Pues mira que pereza  jaja  no mucho la verdad  un poco de trabajo  y tratando de desconectar un rato  ¿y tú?
 
 ==================================================
+Pregunta (19:43:19): Buneas
+Respuesta (19:43:19): Buenas
+
+¿Cómo estás?  Bien gracias  ¿y tú?
+
+==================================================
+Pregunta (19:44:02): Hoila
+Respuesta (19:44:02): Hoila qué más pues
+
+==================================================
+Pregunta (19:44:14): Hola
+Respuesta (19:44:14): Hola
+
+==================================================
+Pregunta (19:44:20): Como vas?
+Respuesta (19:44:20): Bien gracias, un poco cansado pero bien
+
+==================================================
+Pregunta (20:43:10): Hola
+Respuesta (20:43:10): Hola qué más
+
+==================================================
+Pregunta (20:43:44): Me puedes ayudar algo java
+Respuesta (20:43:44): Uy, Java…  sí, algo sé.  Depende qué necesitas,  a veces me las arreglo, otras…  mejor busco un tutorial en YouTube jaja.  ¿Qué tal te puedo ayudar?  Cuéntame qué necesitas y vemos qué puedo hacer
+
+==================================================

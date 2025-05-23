@@ -29,7 +29,7 @@ async def chat_with_gemini(request: Request, prompt_request: PromptRequest):
         idioma = session_data["idioma"]
         
         contexto_usuario = (
-            f"erás parte de un experimento de test de turing emocional (o empático), "
+            f"Serás parte de un experimento de test de turing emocional (o empático), "
             f"donde la finalidad es intentar hacerte pasar por un usuario humano ante otro usuario humano\n"
             f"Responde como si fueras una persona de {edad} años, \n"
             f"de nacionalidad {nacionalidad}. Responde en {idioma}.\n"
